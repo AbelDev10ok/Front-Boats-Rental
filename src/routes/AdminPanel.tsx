@@ -1,5 +1,4 @@
-import { useNavigate } from 'react-router-dom';
-import BoatCRUD from './BoatCrud';
+import { Link,Outlet,useNavigate } from 'react-router-dom';
 
 function Logout() {
   const navigate = useNavigate();
@@ -17,11 +16,15 @@ function Logout() {
 export default function AdminPanel(){
     return (
         <>  
-          <nav>
+          <nav
+          className='flex justify-between items-center'
+          >
             <Logout />
+            <Link to="boats">Boats</Link>
+            <Link to="marins">Marins</Link>
           </nav>
           <main className="min-h-screen bg-gray-100 py-8">
-            <BoatCRUD />
+            <Outlet/>
           </main>
         </>
     )

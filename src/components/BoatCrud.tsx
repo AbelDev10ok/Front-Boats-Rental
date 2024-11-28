@@ -1,19 +1,9 @@
 import { useState } from 'react';
+import useStore from '../store/useStore';
 import BoatForm from './BoatForm';
 import BoatList from './BoatList';
 import {getBoats,deletBoat,updateBoat,addBoatDb} from '../apis/dataBoats'
-import useStore from '../store/useStore';
-
-interface Boat {
-  id: number;
-  tuition: number;
-  type: string;
-  ability: number;
-  name: string;
-  model: string;
-  state: string;
-  priceHours: string;
-}
+import Boat from '../types/Boat';
 
 export default function BoatCRUD() {
   const [boats, setBoats] = useState<Boat[]>([]);
@@ -75,14 +65,21 @@ export default function BoatCRUD() {
 
   };
 
+  const fetchAllBoats = async()=>{
+    try {
+      const dataBoats:Boat[] = await getBoats(token);
+      setBoats(dataBoats);
+    } catch (error) {
+            // manejo de errores, rollback, etc.
+            console.error("Error al obtener los botes: ",error)
+            alert("No se pudo obtener los botes. Por favor, intentalo de nuevo")
+    }
+  }
+  
   const startEditing = (id: number) => {
     setEditingId(id);
   };
 
-  const fetchAllBoats = async()=>{
-    const dataBoats:Boat[] = await getBoats(token);
-    setBoats(dataBoats);
-  }
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
@@ -95,13 +92,19 @@ export default function BoatCRUD() {
       >
         Obtener Todos los Botes
       </button>
-      <BoatList
-        boats={boats}
-        onDelete={deleteBoat}
-        onUpdate={updated}
-        onEdit={startEditing}
-        editingId={editingId}
-      />
+      {boats?
+        <BoatList
+          boats={boats}
+          onDelete={deleteBoat}
+          onUpdate={updated}
+          onEdit={startEditing}
+          editingId={editingId}
+        />
+        :
+        <span>
+          ... loading
+        </span>
+      }
     </div>
   );
 }

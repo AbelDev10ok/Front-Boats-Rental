@@ -1,13 +1,4 @@
-interface Boat {
-  id: number;
-  tuition: number;
-  type: string;
-  ability: number;
-  name: string;
-  model: string;
-  state: string;
-  priceHours: string;
-}
+import Boat from '../types/Boat';
 
 async function getBoats(token:string) {  // Allow null token for error handling
   token = token.replace(/^"(.*)"$/, '$1');

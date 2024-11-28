@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
+import Boat from '../types/Boat';
 
-interface Boat {
-  id: number;
-  tuition: number;
-  type: string;
-  ability: number;
-  name: string;
-  model: string;
-  state: string;
-  priceHours: string;
-}
 
 interface BoatFormProps {
   onSubmit: (boat: Boat) => void;
@@ -18,7 +9,7 @@ interface BoatFormProps {
 
 export default function BoatForm({ onSubmit, initialBoat }: BoatFormProps) {
   const [boat, setBoat] = useState<Boat>(
-    initialBoat || {
+      initialBoat || {
       id: 0,
       tuition: 0,
       type: '',

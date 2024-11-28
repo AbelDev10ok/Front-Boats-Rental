@@ -1,15 +1,6 @@
 import BoatForm from './BoatForm';
+import Boat from '../types/Boat';
 
-interface Boat {
-  id: number;
-  tuition: number;
-  type: string;
-  ability: number;
-  name: string;
-  model: string;
-  state: string;
-  priceHours: string;
-}
 
 interface BoatItemProps {
   boat: Boat;
