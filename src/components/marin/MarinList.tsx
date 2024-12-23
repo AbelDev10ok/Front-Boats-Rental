@@ -1,4 +1,4 @@
-import Marin from "../types/Marin";
+import Marin from "../../types/Marin";
 import MarinItem from "./MarinItem";
 
 interface MarinListProps {

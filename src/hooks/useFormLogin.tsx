@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login} from '../apis/login'; // Assuming this path is correct
+import { login} from '../services/login'; // Assuming this path is correct
 import LoginResponse from '../types/LoginResponse';
 import UseLoginFormReturn from '../types/UseLoginResponse';
 import { jwtDecode } from 'jwt-decode';
@@ -36,9 +36,8 @@ export function useLoginForm():UseLoginFormReturn {
             const decodedToken: AuthResponse = jwtDecode(response.token);
             
             localStorage.setItem('roles',JSON.stringify(decodedToken.authorities))
-            localStorage.setItem('id',JSON.stringify(response.id))
             localStorage.setItem('email',JSON.stringify(decodedToken.sub))
-            localStorage.setItem('token',JSON.stringify(response.token))
+            localStorage.setItem('token',JSON.stringify(response.token).replace(/^"(.*)"$/, '$1'))
 
             await updateUser();
                 

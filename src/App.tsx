@@ -3,9 +3,12 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ProtectedRoutes from './routes/utils/ProtectedRoutes';
 import AdminPanel from './routes/AdminPanel';
 import UserPanel from './routes/UserPanel';
-import './App.css'
-import BoatCRUD from './components/BoatCrud';
-import MarinCrud from './components/MarinCrud';
+import BoatCRUD from './components/boat/BoatCrud';
+import MarinCrud from './components/marin/MarinCrud';
+import UserCrud from './components/user/UserCrud';
+import RentalCrud from './components/rental/RentalCrud';
+import BoatAdd from './components/boat/BoatAdd';
+import MarinAdd from './components/marin/MarinAdd';
 
 
 function App() {
@@ -15,8 +18,12 @@ function App() {
           <Route path="/" element={<Form />} />
           <Route element={<ProtectedRoutes token={true}/>}>
           <Route path='dashboard/admin' element={<AdminPanel/>}>
-              <Route path="boats" element={<BoatCRUD />} /> {/* Ruta relativa correcta */}
-              <Route path="marins" element={<MarinCrud />} /> {/* Ruta relativa correcta */}
+              <Route path="boats" element={<BoatCRUD />} />
+              <Route path="add-boat" element={<BoatAdd/>} />
+              <Route path="marins" element={<MarinCrud />} />
+              <Route path="add-marin" element={<MarinAdd/>} />
+              <Route path="users" element={<UserCrud/>} />
+              <Route path="rentals" element={<RentalCrud/>} />
             </Route>   
           </Route>
           <Route element={<ProtectedRoutes token={true}/>}>

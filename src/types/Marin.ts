@@ -4,4 +4,5 @@ interface Marin{
     lastname:string,
     dni:string
 }
+
 export default Marin;

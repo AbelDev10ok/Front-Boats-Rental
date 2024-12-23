@@ -1,5 +1,5 @@
 
-import LoginResponse from '../types/LoginResponse'; // Import the LoginResponse type
+import LoginResponse from '../types/LoginResponse';
 
 export async function login(email:string, password:string): Promise<LoginResponse> {
       const response = await fetch('http://localhost:8080/api/v1/auth/login', {

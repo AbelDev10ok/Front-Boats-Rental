@@ -1,7 +1,11 @@
 import Boat from '../types/Boat';
 
-async function getBoats(token:string) {  // Allow null token for error handling
-  token = token.replace(/^"(.*)"$/, '$1');
+interface ApiResponse {
+  data: Boat[] | Boat | null; // Permite data como array, objeto o null
+  message: string;
+}
+
+async function getBoats(token:string): Promise<Boat[]> {  // Allow null token for error handling
     try {
 
       const response = await fetch('http://localhost:8080/api/v1/boats', {
@@ -28,8 +32,8 @@ async function getBoats(token:string) {  // Allow null token for error handling
   
       }
   
-        const data = await response.json();
-        return data;
+        const responseData: ApiResponse = await response.json();
+        return responseData.data as Boat[];
   
     } catch (error) {
         console.error("Error en getBoats:", error);
@@ -37,11 +41,10 @@ async function getBoats(token:string) {  // Allow null token for error handling
     }
   }
 
-async function deletBoat (id:number, token:string){
-    token = token.replace(/^"(.*)"$/, '$1');
+async function deletBoat (tuition:number, token:string){
 
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/boats/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/v1/boats/${tuition}`, {
         method: 'DELETE',
         headers: {
             'Authorization':`Bearer ${token}`,
@@ -50,30 +53,26 @@ async function deletBoat (id:number, token:string){
       });
   
       if (!response.ok) {
-        // Handle the error appropriately based on the status code
+        const errorText = await response.text(); // Obtén el mensaje, sea cual sea el status
+
         if (response.status === 401) {
-            // Access token invalid or expired – redirect to login, refresh the token, etc.
             throw new Error('Unauthorized');
-  
         } else if (response.status === 404) {
-            throw new Error('Resource not found'); // Example - Customize as needed
-  
+            throw new Error('Resource not found');
         } else {
-          const errorText = await response.text();  // Get the error as text, not JSON
-          throw new Error(`HTTP error ${response.status}: ${errorText}`); // Include error message from server
+          // Aquí manejas el error del trigger u otros errores del servidor
+          // El mensaje está en 'errorText'
+          throw new Error(errorText); // Lanza un error con el mensaje del servidor
         }
-  
       }
-  
+
     } catch (error) {
-        console.error("Error en getBoats:", error);
-        throw error; // Re-throw for the calling component to handle
+        console.error("Error en deletBoat:", error);
+        throw error; // Re-throw para manejo en el componente
     }
   }
   
 async function updateBoat(token:string,tuition:number,boat:Boat){
-  token = token.replace(/^"(.*)"$/, '$1');
-
   try {
     const response = await fetch(`http://localhost:8080/api/v1/boats/${tuition}`, {
       method: 'PUT', // Or PATCH if you're doing partial updates
@@ -102,8 +101,6 @@ async function updateBoat(token:string,tuition:number,boat:Boat){
 }
 
 async function addBoatDb(token:string, boat: Boat) {
-  token = token.replace(/^"(.*)"$/, '$1');
-
   try{
     const response = await fetch('http://localhost:8080/api/v1/boats/save', {
       method: 'POST',
