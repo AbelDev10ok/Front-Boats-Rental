@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import Logout from './Logut';
+import Logout from './Logout';
 import NavigationItems from './NavigationItems';
+import { Anchor, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function HeaderAdmin() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -15,40 +17,40 @@ export default function HeaderAdmin() {
   };
 
   return (
-    <>
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center px-4 h-16 first-letter:">
+    <header className="bg-blue-600 text-white shadow">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center">
+            <Link to="/dashboard/admin" className="flex items-center">
+              <Anchor className="h-8 w-8 mr-2" />
+              <span className="text-xl font-bold">NauticRent</span>
+            </Link>
+          </div>
+          
+          <nav className="hidden md:flex space-x-8 items-center">
+            <NavigationItems handleDropdownToggle={handleDropdownToggle} openDropdown={openDropdown} />
             <Logout />
-            <nav className="hidden md:flex space-x-8">
-              <NavigationItems handleDropdownToggle={handleDropdownToggle} openDropdown={openDropdown} />
-            </nav>
+          </nav>
 
-            {/* Mobile menu button (dinámico) */}
-            <div className="md:hidden">
-              <button onClick={handleMenu} className="p-2 rounded-md text-gray-700 hover:text-blue-600 focus:outline-none">
-                {menuOpen ? ( // Tus iconos originales
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                )}
-              </button>
-            </div>
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <Logout />
+            <button onClick={handleMenu} className="ml-4 p-2 rounded-md text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+              {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
+      </div>
 
-          {/* Mobile menu (condicional) */}
-          {menuOpen && (
-            <div className="md:hidden bg-white px-4 pt-2 pb-3 space-y-1">
-              <NavigationItems handleDropdownToggle={handleDropdownToggle} openDropdown={openDropdown} />
-            </div>
-          )}
-      </header>
-    </>
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <NavigationItems handleDropdownToggle={handleDropdownToggle} openDropdown={openDropdown} />
+          </div>
+        </div>
+      )}
+    </header>
   );
 }
 

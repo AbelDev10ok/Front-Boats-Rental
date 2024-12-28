@@ -1,4 +1,8 @@
 import RentalResponse from "../types/RentalResponse";
+interface ApiResponse {
+    data: RentalResponse[] | RentalResponse | null; // Permite data como array, objeto o null
+    message: string;
+  }
 
 async function fetchAllRentals(token: string){
     try {
@@ -39,37 +43,6 @@ async function fetchAllRentals(token: string){
         alert(error)
     }
 }
-async function fecthDeletRental(token:string,id:number) {
-    try {
-        const response = await fetch(`http://localhost:8080/api/v1/rentals/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if(!response.ok){
-
-            
-            if (response.status === 401) {
-                throw new Error('Unauthorized');
-            }
-            if (response.status === 403) { // Corregido: 403 para Forbidden
-                throw new Error('Forbidden - No tienes permiso para acceder a este recurso.');
-            }
-            if (response.status === 404) {
-                throw new Error('Resource not found');
-            }
-            const errorData = await response.json(); // Intenta obtener el cuerpo JSON del error
-            throw new Error(`Error ${response.status}: ${errorData.message || 'Error en el servidor'}`)
-        }
-            
-        }catch (error) {
-            alert(error)
-        }
-}
-
 async function fetchUpdateRental(id: number, token: string, rental: RentalResponse) {
 
     const renta = {
@@ -95,12 +68,43 @@ async function fetchUpdateRental(id: number, token: string, rental: RentalRespon
             throw new Error(errorMessage);  // Lanza el error para que lo capture el catch
         }
 
-        const data = await response.json();
-        console.log("Respuesta exitosa:", data);
-        // ... actualiza el estado de tu componente o realiza otras acciones necesarias
-
     } catch (error) {
         console.error("Error updating rental:", error);
     }
 }
-export {fetchAllRentals,fecthDeletRental,fetchUpdateRental};
+
+async function fetchCancelRental(id: number, token: string) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/v1/rentals/cancel/rental/${id}`,{
+            method:'GET',
+            headers:{
+                'Authorization':`Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 403) { 
+                throw new Error('Forbidden - No tienes permiso para acceder a este recurso.');
+            }
+            if (response.status === 404) {
+                throw new Error('Resource not found');
+            }
+             // Manejo de otros errores
+            if(response.status === 400){
+
+                const errorData:ApiResponse = await response.json(); 
+                const error = errorData.message || 'Error en el servidor';
+                throw new Error(`Error ${response.status}: ${error}`);
+            }
+
+        }
+    } catch (error) {
+        console.log(error)
+        
+    }
+}
+export {fetchAllRentals,fetchUpdateRental,fetchCancelRental};

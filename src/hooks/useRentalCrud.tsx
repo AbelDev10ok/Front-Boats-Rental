@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { fecthDeletRental, fetchUpdateRental } from "../services/dataRentals";
+import {fetchCancelRental, fetchUpdateRental } from "../services/dataRentals";
 import useStore from "../store/useStore";
 import RentalResponse from "../types/RentalResponse";
 
@@ -10,15 +10,14 @@ export  function useRentalCrud(){
 
   const {token} = useStore();
 
-  const deleteRental = useCallback(async(id: number) => {
+  const cancelRental = useCallback(async(id: number) => {
     // optimista
     const prevState = [...rentals]
     setRentals(rentals.filter(rental => rental.id !== id));
     try {
-      fecthDeletRental(token,id)
+      fetchCancelRental(id,token)
     } catch (error) {
         console.error("Error al obtener los botes: ",error)
-        alert(error)
         setRentals(prevState)
     }
 
@@ -48,5 +47,5 @@ export  function useRentalCrud(){
     setEditingId(id);
   };
 
-  return {editingId,startEditing,updatedRental,deleteRental,filter,setFilter,rentals,setRentals}
+  return {editingId,startEditing,updatedRental,cancelRental,filter,setFilter,rentals,setRentals}
 }

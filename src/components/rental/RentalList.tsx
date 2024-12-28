@@ -4,15 +4,14 @@ import RentalItem from './RentalItem';
 
 interface RentalListProps {
   rentals: RentalResponse[];
-  onDelete: (id: number) => void;
   onUpdate: (id: number, boat: RentalResponse) => void;
   onEdit: (id: number) => void;
   editingId: number | null;
   filter: 'all' | 'FINALIZADA' | 'PENDIENTE' | 'CANCELADO' | 'CONFIRMADO';
 }
 
-export default function RentalList({ rentals, onDelete, onUpdate, onEdit, editingId, filter }: RentalListProps) {
-  
+export default function RentalList({ rentals, onUpdate, onEdit, editingId, filter }: RentalListProps) {
+
   const filterRentals = rentals.filter(rental => {
     if (filter === 'all') return true;
     if (filter === 'FINALIZADA') return rental.state === 'FINALIZADA';
@@ -29,7 +28,6 @@ export default function RentalList({ rentals, onDelete, onUpdate, onEdit, editin
         <RentalItem
           key={rental.id}
           rental={rental}
-          onDelete={onDelete}
           onUpdate={onUpdate}
           onEdit={onEdit}
           isEditing={editingId === rental.id}

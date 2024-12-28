@@ -5,7 +5,8 @@ interface UseLoginFormReturn {
     password: string;
     setPassword: React.Dispatch<React.SetStateAction<string>>;
     error: string;
-    handleSubmit: (e: React.FormEvent) => Promise<void>;
+    handleSubmitLog: (e: React.FormEvent) => Promise<void>;
+    handleSubmitRegister:(e: React.FormEvent) => Promise<void>;
 }
 
 export default UseLoginFormReturn;

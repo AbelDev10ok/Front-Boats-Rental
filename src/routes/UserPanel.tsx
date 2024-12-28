@@ -1,5 +1,14 @@
+import { Outlet } from "react-router-dom";
+import HeaderUser from "../components/HeaderUser";
+
 export default function UserPanel(){
     return (
-        <h1>user</h1>
+            <>
+                <HeaderUser/>
+                <main className="min-h-screen bg-gray-300">
+                <Outlet/>
+                </main>
+            </>
     )
 };
+

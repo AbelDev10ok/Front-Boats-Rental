@@ -1,117 +1,75 @@
+import { Link } from 'react-router-dom';
+import { ChevronDown } from 'lucide-react';
 
-import { ChevronDown, User, SailboatIcon as Boat, Anchor, Calendar } from 'lucide-react'
-import { Link } from 'react-router-dom'
-
-const getIcon = (label: string) => {
-    switch (label) {
-      case 'Botes':
-        return <Boat className="w-4 h-4" />
-      case 'Marins':
-        return <Anchor className="w-4 h-4" />
-      case 'Users':
-        return <User className="w-4 h-4" />
-      case 'Rentas':
-        return <Calendar className="w-4 h-4" />
-      default:
-        return null
-    }
+interface NavigationItemsProps {
+  handleDropdownToggle: (label: string) => void;
+  openDropdown: string | null;
 }
 
-const navigation: NavItem[] = [
+export default function NavigationItems({ handleDropdownToggle, openDropdown }: NavigationItemsProps) {
+  const navigationItems = [
     {
-        label: 'Users',
-        href: 'users',
+      label: 'Usuarios',
+      href: '/dashboard/admin/users',
+      dropdownItems: [
+        { label: 'Ver Usuarios', href: '/dashboard/admin/users' }
+      ],
     },
-    
     {
-      
       label: 'Botes',
-      href: 'boats',
-      children: [
-        { label: 'Lista de Botes', href: 'boats' },
-        { label: 'Agregar Bote', href: 'add-boat' },
-        // { label: 'Mantenimiento', href: '/boats/maintenance' },
+      href: '/dashboard/admin/boats',
+      dropdownItems: [
+        { label: 'Ver Botes', href: '/dashboard/admin/boats' },
+        { label: 'Agregar Bote', href: '/dashboard/admin/add-boat' },
       ],
     },
     {
-      label: 'Marins',
-      href: 'marins',
-      children: [
-        { label: 'Lista de Marins', href: 'marins' },
-        { label: 'Agregar Marin', href: 'add-marin' },
-      ],
+      label: 'Marineros',
+      href: '/dashboard/admin/marins',
+      dropdownItems: [
+        { label: 'Ver Marineros', href: '/dashboard/admin/marins' },
+        { label: 'Agregar Marinero', href: '/dashboard/admin/add-marin' },
+      ]
     },
     {
       label: 'Rentas',
-      href: 'rentals',
-      children: [
-        { label: 'Lista de Rentas', href: 'rentals' },
+      href: '/dashboard/admin/rentals',
+      dropdownItems: [
+        { label: 'Ver Rentas', href: '/dashboard/admin/rentals' }
       ],
     },
-  ]
-  
+  ];
 
-interface NavItem {
-    label: string
-    href: string
-    children?: { label: string; href: string }[]
-  }
-
-interface NavigationProps{
-    handleDropdownToggle: (label: string) => void;
-    openDropdown: string | null;
-}
-
-export default function NavigationItems({handleDropdownToggle, openDropdown}: NavigationProps) {
-    return (
-        <>
-        {navigation.map((item) => (
-            <div key={item.label} className="relative">
-              {item.children ? (
-                  <div>
-                  <button
-                    onClick={() => handleDropdownToggle(item.label)}
-                    className="w-full flex justify-between items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
-                    >
-                    <div className='flex items-center space-x-2'>
-                        {getIcon(item.label)}
-                        <span>{item.label}</span>
-                    </div>
-
-                    <div>
-                        <ChevronDown
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                            openDropdown === item.label ? 'rotate-180' : ''
-                            }`}
-                        />
-                    </div>
-                  </button>
-                  {openDropdown === item.label && (
-                      <div className="absolute z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                      <div className="py-1">
-                        {item.children.map((child) => (
-                            <Link
-                            to={child.href}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                            {child.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
+  return (
+    <>
+      {navigationItems.map((item) => (
+        <div key={item.label} className="relative group">
+          <button
+            onClick={() => handleDropdownToggle(item.label)}
+            className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+          >
+            {item.label}
+            <ChevronDown className="ml-1 h-4 w-4" />
+          </button>
+          {openDropdown === item.label && (
+            <div className="absolute z-10 left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+              <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                {item.dropdownItems.map((dropdownItem) => (
                   <Link
-                  to={item.href}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors"
+                    key={dropdownItem.label}
+                    to={dropdownItem.href}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    role="menuitem"
                   >
-                  {getIcon(item.label)}
-                  <span>{item.label}</span>
-                </Link>
-              )}
+                    {dropdownItem.label}
+                  </Link>
+                ))}
+              </div>
             </div>
-          ))}
-        </>
-    )
+          )}
+        </div>
+      ))}
+    </>
+  );
 }
+

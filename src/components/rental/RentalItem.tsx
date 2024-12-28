@@ -4,13 +4,12 @@ import RentalForm from "./RentalForm";
 
 interface RentalItemProps {
   rental: RentalResponse;
-  onDelete: (id: number) => void;
   onUpdate: (id: number, boat: RentalResponse) => void;
   onEdit: (id: number) => void;
   isEditing: boolean;
 }
 
-export default function RentalItem({ rental, onDelete, onUpdate, onEdit, isEditing }: RentalItemProps) {
+export default function RentalItem({ rental, onUpdate, onEdit, isEditing }: RentalItemProps) {
   return (
     <div className="h-min bg-white shadow-md rounded-lg overflow-hidden">
       {isEditing ? (
@@ -33,12 +32,6 @@ export default function RentalItem({ rental, onDelete, onUpdate, onEdit, isEditi
               className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded text-sm transition duration-300 ease-in-out"
             >
               Editar
-            </button>
-            <button
-              onClick={() => onDelete(rental.id)}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm transition duration-300 ease-in-out"
-            >
-              Eliminar
             </button>
           </div>
         </div>

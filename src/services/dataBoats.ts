@@ -122,5 +122,31 @@ async function addBoatDb(token:string, boat: Boat) {
   }
 
 }
+async function getBoatsAvaiable(token:string,dateInit:Date | null,dateEnd:Date | null): Promise<Boat[]> {
+  try{
+    const queryParams = new URLSearchParams({
+      dateInit: dateInit ? dateInit.toISOString() : '',
+      dateEnd: dateEnd ? dateEnd.toISOString() : ''
+    }).toString();
 
-export {getBoats, deletBoat,updateBoat,addBoatDb};
+    const response = await fetch(`http://localhost:8080/api/v1/boats/available?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        'Authorization':`Bearer ${token}`,
+        'Content-Type': 'application/json', //This is not needed for GET requests
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+    }
+    const responseData: ApiResponse = await response.json();
+    return responseData.data as Boat[];
+
+  }catch(error){
+    console.error("Error en getBoatsAvaiable:", error);
+    throw error;
+  }
+}
+export {getBoats, deletBoat,updateBoat,addBoatDb, getBoatsAvaiable};

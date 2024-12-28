@@ -1,4 +1,4 @@
-import Form from './components/Form'
+import Form from './components/Form.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ProtectedRoutes from './routes/utils/ProtectedRoutes';
 import AdminPanel from './routes/AdminPanel';
@@ -9,28 +9,31 @@ import UserCrud from './components/user/UserCrud';
 import RentalCrud from './components/rental/RentalCrud';
 import BoatAdd from './components/boat/BoatAdd';
 import MarinAdd from './components/marin/MarinAdd';
-
-
+import RentalsUser from './components/user/RentalsUser.tsx';
+import RentalPage from './components/RentalPage.tsx';
 function App() {
   return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Form />} />
-          <Route element={<ProtectedRoutes token={true}/>}>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Form />} />
+        <Route element={<ProtectedRoutes token={true}/>}>
           <Route path='dashboard/admin' element={<AdminPanel/>}>
-              <Route path="boats" element={<BoatCRUD />} />
-              <Route path="add-boat" element={<BoatAdd/>} />
-              <Route path="marins" element={<MarinCrud />} />
-              <Route path="add-marin" element={<MarinAdd/>} />
-              <Route path="users" element={<UserCrud/>} />
-              <Route path="rentals" element={<RentalCrud/>} />
-            </Route>   
-          </Route>
-          <Route element={<ProtectedRoutes token={true}/>}>
-              <Route path='dashboard/user' element={<UserPanel/>}/>   
-          </Route>
-        </Routes>
-      </BrowserRouter>
+            <Route path="boats" element={<BoatCRUD />} />
+            <Route path="add-boat" element={<BoatAdd/>} />
+            <Route path="marins" element={<MarinCrud />} />
+            <Route path="add-marin" element={<MarinAdd/>} />
+            <Route path="users" element={<UserCrud/>} />
+            <Route path="rentals" element={<RentalCrud/>} />
+          </Route>   
+        </Route>
+        <Route element={<ProtectedRoutes token={true}/>}>
+          <Route path='dashboard/user' element={<UserPanel/>}>
+            <Route path="rentas-user" element={<RentalsUser/>} />
+            <Route path="rental" element={<RentalPage/>} />
+          </Route>   
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

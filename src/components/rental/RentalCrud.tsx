@@ -6,7 +6,7 @@ import { useRentalCrud } from '../../hooks/useRentalCrud';
 import Snipper from '../Snipper';
 
 export default function RentalCrud() {
-  const {deleteRental,updatedRental,startEditing,rentals,setRentals,filter,setFilter,editingId} = useRentalCrud();
+  const {updatedRental,startEditing,rentals,setRentals,filter,setFilter,editingId} = useRentalCrud();
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState<string | null>(null);
   const {token} = useStore();
@@ -63,7 +63,6 @@ export default function RentalCrud() {
           :
           <RentalList
             rentals={rentals}
-            onDelete={deleteRental}
             onUpdate={updatedRental}
             onEdit={startEditing}
             editingId={editingId}
