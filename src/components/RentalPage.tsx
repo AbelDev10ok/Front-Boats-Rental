@@ -3,8 +3,11 @@ import RentalCalendar from "./RentalCalendar";
 import RentalResponse from "../types/RentalResponse";
 import Boat from "../types/Boat";
 import { getBoatsAvaiable } from "../services/dataBoats";
+import {fetchCreateRental} from "../services/dataRentals";
 import useStore from "../store/useStore";
 import {Ship } from 'lucide-react';
+import { Toaster, toast } from 'react-hot-toast';
+
 
 export default function RentalPage() {
     const {token} = useStore();
@@ -29,12 +32,29 @@ export default function RentalPage() {
           username: boat.name,
         });
     };
+
+    useEffect(() => {
+        const boat = boats.find((boat) => boat.tuition === rental.tuitionBoat);
+
+        if (rental.dateInit && rental.dateEnd && boat) {
+          const dateInit = new Date(rental.dateInit);
+          const dateEnd = new Date(rental.dateEnd);
+          const timeDiff = Math.abs(dateEnd.getTime() - dateInit.getTime());
+          const diffHours = Math.ceil(timeDiff / (1000 * 3600));
+          const total = (diffHours+24) * Number(boat.priceHours);
+    
+          setRental((prevRental) => ({ ...prevRental, total }));
+        }else if(rental.dateInit && !rental.dateEnd && boat) {
+            setRental((prevRental) => ({ ...prevRental, total: Number(boat.priceHours)*24 }));
+        }
+      }, [rental.dateInit, rental.dateEnd, rental.tuitionBoat, boats]);
     
     useEffect(() => {
+
         if (!rental.dateInit || !rental.dateEnd) return;
         setLoading(true);
         setError(null);
-        getBoatsAvaiable(token, rental.dateInit, rental.dateEnd)
+        getBoatsAvaiable(token, rental.dateInit ? new Date(rental.dateInit) : null, rental.dateEnd ? new Date(rental.dateEnd) : null)
         .then((data) => {
           setBoats(data);
         })
@@ -47,6 +67,8 @@ export default function RentalPage() {
         });
     }, [rental.dateInit, rental.dateEnd, token]);
 
+
+    
     const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
         setRental(prevRental => ({
             ...prevRental,
@@ -55,8 +77,25 @@ export default function RentalPage() {
         }));
     }
 
+    const confirmRental = () => {
+            if (!rental.dateInit || !rental.dateEnd) {
+                throw new Error('Debes seleccionar las fechas de inicio y fin de tu aventura.');
+            }
+            if (!rental.tuitionBoat) {
+                throw new Error('Debes seleccionar un bote para tu aventura.');
+            }
+        try {
+            fetchCreateRental(token, rental)
+            toast.success('Renta creada correctamente, confirme la renta desde su mail');
+        } catch (error) {
+            console.log("Error creating rental:", error);
+            toast.error('Error al crear la renta');
+        }
+    }
+
     return (
         <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen">
+            <Toaster/>
             <main className="container mx-auto px-4 py-8">
                 <h2 className="text-2xl md:text-3xl font-semibold text-center mb-8 text-blue-800">Reserva tu Bote de Ensueño</h2>
                 
@@ -75,11 +114,11 @@ export default function RentalPage() {
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center border-b pb-2">
                                     <span className="text-gray-600">Fecha de inicio:</span>
-                                    <span className="font-medium">{rental.dateInit ? rental.dateInit.toLocaleDateString() : 'No seleccionada'}</span>
+                                    <span className="font-medium">{rental.dateInit ? rental.dateInit.toLocaleString() : 'No seleccionada'}</span>
                                 </div>
                                 <div className="flex justify-between items-center border-b pb-2">
                                     <span className="text-gray-600">Fecha de fin:</span>
-                                    <span className="font-medium">{rental.dateEnd ? rental.dateEnd.toLocaleDateString() : 'No seleccionada'}</span>
+                                    <span className="font-medium">{rental.dateEnd ? rental.dateEnd.toLocaleString() : 'No seleccionada'}</span>
                                 </div>
                                 <div className="flex justify-between items-center border-b pb-2">
                                     <span className="text-gray-600">Bote seleccionado:</span>
@@ -89,11 +128,16 @@ export default function RentalPage() {
                                     <span className="text-gray-600">Matrícula del bote:</span>
                                     <span className="font-medium">{rental.tuitionBoat || 'N/A'}</span>
                                 </div>
+                                <div className="flex justify-between items-center border-t pt-2">
+                                    <span className="text-gray-600">Total a Pagar:</span>
+                                    <span className="font-medium">${rental.total}</span>
+                                </div>
                             </div>
 
                             <button 
                                 className="mt-6 w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                                disabled={!rental.dateInit || !rental.dateEnd || !rental.tuitionBoat}
+                                disabled={!rental.dateInit  || !rental.tuitionBoat}
+                                onClick={confirmRental}
                             >
                                 Confirmar Reserva
                             </button>
@@ -143,11 +187,6 @@ export default function RentalPage() {
                     </div>
                 </div>
             </main>
-            <footer className="bg-gray-800 text-white py-4 mt-12">
-                <div className="container mx-auto px-4 text-center">
-                    <p>&copy; 2023 NauticRent. Todos los derechos reservados.</p>
-                </div>
-            </footer>
         </div>
     );
 }

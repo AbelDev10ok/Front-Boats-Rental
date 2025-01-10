@@ -1,7 +1,7 @@
 interface RentalResponse {
     id: number,
-    dateInit: Date | null,
-    dateEnd: Date | null,
+    dateInit: Date | string|null,
+    dateEnd: Date | string | null,
     state: string,//pend,conf,canc
     total: number,
     username: string,

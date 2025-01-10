@@ -3,7 +3,7 @@ import Marin from "../../types/Marin";
 import useStore from "../../store/useStore";
 import {fetchAllMarins} from "../../services/dataMarins"
 import MarinList from "./MarinList";
-import { useMarinCrud } from "../../hooks/useMarinCrud";
+import useMarinCrud  from "../../hooks/useMarinCrud";
 import Snipper from "../Snipper";
 
 
@@ -11,7 +11,7 @@ export default function MarinCrud(){
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState<string | null>(null);
 
-    const {deleteMarin,updateMarin,marins,setMarins,editingId,startEditing} = useMarinCrud();
+    const {updateMarin,marins,setMarins,editingId,startEditing} = useMarinCrud();
     
     const {token} = useStore();
 
@@ -48,7 +48,7 @@ export default function MarinCrud(){
             :
                 <MarinList
                 marins={marins}
-                onDelete={deleteMarin}
+                // onDelete={deleteMarin}
                 onUpdate={updateMarin}
                 onEdit={startEditing}
                 editingId={editingId}

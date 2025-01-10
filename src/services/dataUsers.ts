@@ -10,60 +10,43 @@ async function fetchAllUsers(token:string){
             }
         })
 
-        if (!response.ok) {
-            // Handle the error appropriately based on the status code
-            if (response.status === 401) {
-                // Access token invalid or expired – redirect to login, refresh the token, etc.
-                throw new Error('Unauthorized');
-      
-            } else if (response.status === 404) {
-                throw new Error('Resource not found'); // Example - Customize as needed
-      
-            } else {
-              const errorText = await response.text();  // Get the error as text, not JSON
-              throw new Error(`HTTP error ${response.status}: ${errorText}`); // Include error message from server
-            }
-        }
         const responseData = await response.json();
-        const users: UserType[] = responseData.data;
 
-        console.log(users);
+        if (!response.ok) {
+          throw new Error(responseData.data || (`HTTP error ${response.status}`));
+        }
+    
+        const users: UserType[] = responseData.data;
         return users;
     }catch(error){
         console.error("Error en deleteMarin:", error);
-        throw error;
+        throw new Error("Error: "+error);
     }
 } 
 
 async function fecthupdateEnabledStatus(email:string,token:string,enabled:boolean){
+    
+    const queryParams = new URLSearchParams({
+        enabled:enabled.toString()
+      })
 
     try {
-        const response = await fetch(`http://localhost:8080/api/v1/users/${email}/enabled?enabled=${enabled}`,{
+        const response = await fetch(`http://localhost:8080/api/v1/users/${email}/enabled?${queryParams} `,{
             method:'PUT',
             headers:{
                 'Authorization':`Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
+
         })
+        const responseData = await response.json();
+
         if (!response.ok) {
-            // Handle the error appropriately based on the status code
-            if (response.status === 401) {
-                // Access token invalid or expired – redirect to login, refresh the token, etc.
-                throw new Error('Unauthorized');
-      
-            } else if (response.status === 404) {
-                throw new Error('Resource not found'); // Example - Customize as needed
-      
-            } else {
-              const errorText = await response.text();  // Get the error as text, not JSON
-              throw new Error(`HTTP error ${response.status}: ${errorText}`); // Include error message from server
-            }
+          throw new Error(responseData.data || (`HTTP error ${response.status}`));
         }
-        return true
     } catch (error) {
         console.error("Error en change status user:", error);
-        throw error;
-        return false;
+        throw new Error("Error: "+error);
     }
 }
 export {fetchAllUsers,fecthupdateEnabledStatus}

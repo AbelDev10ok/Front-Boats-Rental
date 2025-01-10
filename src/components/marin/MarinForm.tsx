@@ -88,7 +88,7 @@ export default function MarinForm({onSubmit,initialMarin}: MarinFormProps){
                     max={8}
                     value={marin.dni}
                     onChange={handleChange}
-                    className={labelClass}
+                    className={inputClass}
                     required
                     />
                 </div>

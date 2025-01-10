@@ -3,14 +3,14 @@ import MarinForm from "./MarinForm";
 
 interface MarinItemProps {
     marin: Marin;
-    onDelete: (id: number) => void;
+    // onDelete: (id: number) => void;
     onUpdate: (id: number, boat: Marin) => void;
     onEdit: (id: number) => void;
     isEditing: boolean;
 }
 
 
-export default function MarinItem({marin,onDelete,onUpdate,onEdit,isEditing}: MarinItemProps){
+export default function MarinItem({marin,onUpdate,onEdit,isEditing}: MarinItemProps){
     return (
         <div className="h-min bg-white shadow-md rounded-lg overflow-hidden">
         {isEditing?
@@ -32,12 +32,12 @@ export default function MarinItem({marin,onDelete,onUpdate,onEdit,isEditing}: Ma
                   >
                     Editar
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => onDelete(marin.id)}
                     className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded text-sm transition duration-300 ease-in-out"
                   >
                     Eliminar
-                  </button>
+                  </button> */}
                 </div>
               </div>
             )

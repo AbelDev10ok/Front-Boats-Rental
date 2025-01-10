@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import HeaderUser from "../components/HeaderUser";
+import Footer from "../components/Footer";
 
 export default function UserPanel(){
     return (
@@ -8,6 +9,7 @@ export default function UserPanel(){
                 <main className="min-h-screen bg-gray-300">
                 <Outlet/>
                 </main>
+                <Footer/>
             </>
     )
 };

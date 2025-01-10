@@ -33,6 +33,7 @@ export  function useRentalCrud(){
       setRentals(updateRentals);
       setEditingId(null);
     }
+    console.log("updatedRental",id);
     try{
       fetchUpdateRental(id,token,updateRental);
     }catch(error){

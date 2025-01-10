@@ -1,9 +1,5 @@
 import Boat from '../types/Boat';
 
-interface ApiResponse {
-  data: Boat[] | Boat | null; // Permite data como array, objeto o null
-  message: string;
-}
 
 async function getBoats(token:string): Promise<Boat[]> {  // Allow null token for error handling
     try {
@@ -16,23 +12,11 @@ async function getBoats(token:string): Promise<Boat[]> {  // Allow null token fo
         
       });
   
+      const responseData = await response.json();
+
       if (!response.ok) {
-        // Handle the error appropriately based on the status code
-        if (response.status === 401) {
-            // Access token invalid or expired – redirect to login, refresh the token, etc.
-            throw new Error('Unauthorized');
-  
-        } else if (response.status === 404) {
-            throw new Error('Resource not found'); // Example - Customize as needed
-  
-        } else {
-          const errorText = await response.text();  // Get the error as text, not JSON
-          throw new Error(`HTTP error ${response.status}: ${errorText}`); // Include error message from server
-        }
-  
+        throw new Error(responseData.data || (`HTTP error ${response.status}`));
       }
-  
-        const responseData: ApiResponse = await response.json();
         return responseData.data as Boat[];
   
     } catch (error) {
@@ -52,24 +36,17 @@ async function deletBoat (tuition:number, token:string){
         
       });
   
-      if (!response.ok) {
-        const errorText = await response.text(); // Obtén el mensaje, sea cual sea el status
+      const responseData = await response.json();
 
-        if (response.status === 401) {
-            throw new Error('Unauthorized');
-        } else if (response.status === 404) {
-            throw new Error('Resource not found');
-        } else {
-          // Aquí manejas el error del trigger u otros errores del servidor
-          // El mensaje está en 'errorText'
-          throw new Error(errorText); // Lanza un error con el mensaje del servidor
-        }
+      if (!response.ok) {
+        throw new Error(responseData.data || (`HTTP error ${response.status}`));
       }
+  
 
     } catch (error) {
         console.error("Error en deletBoat:", error);
-        throw error; // Re-throw para manejo en el componente
-    }
+        throw new Error("Error: "+error);
+      }
   }
   
 async function updateBoat(token:string,tuition:number,boat:Boat){
@@ -83,19 +60,16 @@ async function updateBoat(token:string,tuition:number,boat:Boat){
       body: JSON.stringify(boat),
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+      throw new Error(responseData.data || (`HTTP error ${response.status}`));
     }
 
-    const updatedBoatData = await response.json();  // Assuming the backend returns the updated boat data
-    // Optionally, merge relevant updatedBoatData properties back into the existing boat object before returning. 
-
-    return updatedBoatData as Boat;
+    return responseData.data as Boat;
 
   } catch (error) {
-    console.error("Error updating boat:", error);
-    throw error;
+    throw new Error("Error: "+error);
   }
   
 }
@@ -111,18 +85,18 @@ async function addBoatDb(token:string, boat: Boat) {
       body: JSON.stringify(boat),
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+      throw new Error(responseData.data || (`HTTP error ${response.status}`));
     }
 
   }catch(error){
-    console.error("Error en addBoat:", error);
-    throw error;
+    throw new Error("Error: "+error);
   }
 
 }
-async function getBoatsAvaiable(token:string,dateInit:Date | null,dateEnd:Date | null): Promise<Boat[]> {
+async function getBoatsAvaiable(token:string, dateInit: Date | null, dateEnd:Date | null): Promise<Boat[]> {
   try{
     const queryParams = new URLSearchParams({
       dateInit: dateInit ? dateInit.toISOString() : '',
@@ -137,16 +111,15 @@ async function getBoatsAvaiable(token:string,dateInit:Date | null,dateEnd:Date |
       },
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+      throw new Error(responseData.data || (`HTTP error ${response.status}`));
     }
-    const responseData: ApiResponse = await response.json();
     return responseData.data as Boat[];
 
   }catch(error){
-    console.error("Error en getBoatsAvaiable:", error);
-    throw error;
+    throw new Error("Error: "+error);
   }
 }
 export {getBoats, deletBoat,updateBoat,addBoatDb, getBoatsAvaiable};

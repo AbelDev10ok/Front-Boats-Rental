@@ -76,16 +76,8 @@ export function useLoginForm() {
         toast.success('Registro exitoso. Por favor, inicia sesión.');
         setIsLogin(true);
         setFormData({ email: '', password: '' });
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else if (typeof err === 'string') {
-          setError(err);
-        } else if (err && typeof err === 'object' && 'message' in err) {
-          setError(err.message as string);
-        } else {
-          setError("An unexpected error occurred.");
-        }
+      } catch (error) {
+        setError("Error: "+ error);
       } finally {
         setIsLoading(false);
       }

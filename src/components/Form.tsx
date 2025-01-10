@@ -1,9 +1,6 @@
 import { useLoginForm } from '../hooks/useFormLogin';
 import { Toaster } from 'react-hot-toast';
 
-
-
-
 export default function Form(){
     const { 
         formData, 

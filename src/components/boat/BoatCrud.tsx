@@ -6,10 +6,10 @@ import Boat from '../../types/Boat';
 import { getBoats } from '../../services/dataBoats';
 import Snipper from '../Snipper';
 
+
 export default function BoatCRUD() {
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState<string | null>(null);
-
   const {boats,deleteBoat,updated,editingId,startEditing,setBoats} = useBoatCrud();
   const {token} = useStore();
 
